@@ -1,3 +1,3 @@
 # LifecycleApplication Example
 
-Just a demo application on handling Androd Application lifecycle
+Just a demo application on handling Android Application lifecycle
