@@ -1,0 +1,54 @@
+package io.daio.lifecycleapplication
+
+import android.app.Activity
+import android.app.Application
+import android.content.ComponentCallbacks2
+import android.content.res.Configuration
+import android.os.Bundle
+import java.util.concurrent.atomic.AtomicBoolean
+
+class AppLifecycleHandler(private val lifeCycleDelegate: LifeCycleDelegate) : Application.ActivityLifecycleCallbacks, ComponentCallbacks2 {
+
+    private val appInForeground = AtomicBoolean(false)
+
+    override fun onActivityPaused(p0: Activity?) {}
+
+    override fun onActivityResumed(p0: Activity?) {
+        if (!appInForeground.get()) {
+            appInForeground.set(true)
+            lifeCycleDelegate.onAppForegrounded()
+        }
+    }
+
+    override fun onActivityStarted(p0: Activity?) {
+    }
+
+    override fun onActivityDestroyed(p0: Activity?) {
+    }
+
+    override fun onActivitySaveInstanceState(p0: Activity?, p1: Bundle?) {
+    }
+
+    override fun onActivityStopped(p0: Activity?) {
+    }
+
+    override fun onActivityCreated(p0: Activity?, p1: Bundle?) {
+    }
+
+    override fun onLowMemory() {}
+
+    override fun onConfigurationChanged(p0: Configuration?) {}
+
+    override fun onTrimMemory(level: Int) {
+        if (level == ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
+            appInForeground.set(false)
+            lifeCycleDelegate.onAppBackgrounded()
+        }
+    }
+
+}
+
+interface LifeCycleDelegate {
+    fun onAppBackgrounded()
+    fun onAppForegrounded()
+}
