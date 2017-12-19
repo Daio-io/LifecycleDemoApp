@@ -9,13 +9,13 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 class AppLifecycleHandler(private val lifeCycleDelegate: LifeCycleDelegate) : Application.ActivityLifecycleCallbacks, ComponentCallbacks2 {
 
-    private val appInForeground = AtomicBoolean(false)
+    private var appInForeground = false
 
     override fun onActivityPaused(p0: Activity?) {}
 
     override fun onActivityResumed(p0: Activity?) {
-        if (!appInForeground.get()) {
-            appInForeground.set(true)
+        if (!appInForeground) {
+            appInForeground = true
             lifeCycleDelegate.onAppForegrounded()
         }
     }
@@ -41,7 +41,7 @@ class AppLifecycleHandler(private val lifeCycleDelegate: LifeCycleDelegate) : Ap
 
     override fun onTrimMemory(level: Int) {
         if (level == ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
-            appInForeground.set(false)
+            appInForeground = false
             lifeCycleDelegate.onAppBackgrounded()
         }
     }
